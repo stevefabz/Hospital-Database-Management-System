@@ -1,0 +1,101 @@
+----DML Scripts
+
+--1. ----SELECT
+
+		SELECT *
+		FROM ROOM
+		WHERE ROOM_TYPE <>'Single Bedroom';
+		
+
+--2.-----INSERT
+
+		INSERT INTO DOCTOR(first_name,last_name,gender,email,phone,hospital_id)
+		 VALUES ('Gabriella','Mendes','Female','gmendes@tclinic.com','512654891',3);
+
+		INSERT INTO DOCTOR(first_name,last_name,gender,email,phone,hospital_id)
+		 VALUES ('Ian','Murphy','Male','imurphy@tclinic.com','522659186',1);
+		 
+		 INSERT INTO PATIENT (first_name,last_name,address,phone,email,age,gender,doctor_id)
+	     VALUES ('Melissa','Burgh','15 Smyth Road, Innes, ON','6335768113','meb123@gmail.com',25,'Female',21);
+		 
+		 INSERT INTO PATIENT (first_name,last_name,address,phone,email,age,gender,doctor_id)
+	     VALUES ('Bob','Cameron','10 Coventry Avenue, Innes, ON','6332670943','cameronb@hotmail.com',65,'Male',22);
+		 
+
+--3. -----UPDATE
+
+		UPDATE DOCTOR
+		SET EMAIL='johnmurphy@tclinic.com'
+			FIRST_NAME ='John'
+		WHERE DOCTOR_ID=22;
+
+
+--4. ------JOINS
+
+		SELECT 
+		TRIM(CONCAT(DC.FIRST_NAME,' ', DC.LAST_NAME))as DOCTOR_NAME,
+		DC.EMAIL AS DOCTOR_EMAIL,
+		TRIM(CONCAT(PT.FIRST_NAME,' ', PT.LAST_NAME))as PATIENT_NAME,
+		PT.EMAIL AS PATIENT_EMAIL
+		FROM DOCTOR AS DC
+		INNER JOIN PATIENT AS PT ON DC.DOCTOR_ID=PT.DOCTOR_ID;
+ 
+
+--5. -----AGGREGATION (COUNT)
+
+		SELECT 
+		DC.DOCTOR_ID,
+		DC.EMAIL AS DOCTOR_EMAIL,
+		COUNT(PT.PATIENT_ID) AS NO_OF_PATIENTS
+		FROM DOCTOR DC
+		INNER JOIN PATIENT AS PT 
+		ON DC.DOCTOR_ID=PT.DOCTOR_ID
+		GROUP BY DC.DOCTOR_ID
+		ORDER BY COUNT(PT.PATIENT_ID) DESC;
+
+
+---6. ---DELETE ---
+		
+		DELETE 
+		FROM PATIENT 
+		WHERE PATIENT_ID =33;
+
+
+--7 CASE STATEMENT ---
+
+		SELECT 
+		PT.PATIENT_ID,
+		CONCAT(PT.FIRST_NAME,' ', PT.LAST_NAME)as PATIENT_NAME,
+		PT.GENDER,
+		PT.AGE,
+		PT.EMAIL,
+		RM.DIAGNOSES,
+		CASE
+		WHEN RM.DIAGNOSES LIKE '%Covid%' 
+		THEN 'SEND COVID RECORD TO PROVINCIAL HEALTHCARE'
+		ELSE 'NOT COVID RELATED: IGNORE'
+		END  AS COVID19_POLICY
+		FROM PATIENT AS PT
+		INNER JOIN RECOMMENDATION RM
+		ON PT.PATIENT_ID=RM.PATIENT_ID
+
+
+---8 AGGREGATION (SUM)
+
+SELECT 
+P.PATIENT_ID,
+CONCAT(P.FIRST_NAME,' ', P.LAST_NAME)as PATIENT_NAME,
+SUM(DOCTOR_CHARGES + TEST_CHARGE + PRESCRIPTION_CHARGES +  (ROOM_CHARGE_PER_DAY * NUMBER_OF_DAYS)) AS TOTAL_BILL
+FROM PATIENT P
+INNER JOIN BILL B
+ON P.PATIENT_ID=B.PATIENT_ID
+GROUP BY P.PATIENT_ID
+ORDER BY  TOTAL_BILL
+	 
+
+
+
+
+
+
+

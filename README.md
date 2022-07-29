@@ -1,2 +1,2 @@
 # CapstoneProject_HDMS
-Eastern University Final project
+Eastern University Capstone project 2
